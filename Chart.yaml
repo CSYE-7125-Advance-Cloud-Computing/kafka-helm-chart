@@ -1,0 +1,8 @@
+apiVersion: v2
+name: kafka-chart
+description: A Helm chart for installing Kafka and Zookeeper (optional)
+version: 0.1.0
+dependencies:
+  - name: kafka
+    version: 26.8.5
+    repository: https://charts.bitnami.com/bitnami

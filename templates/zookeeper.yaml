@@ -1,0 +1,24 @@
+{{- if .Values.kafka.zookeeper.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zookeeper
+  labels:
+    app: zookeeper
+spec:
+  replicas: {{ .Values.kafka.zookeeper.replicas }}
+  selector:
+    matchLabels:
+      app: zookeeper
+  template:
+    metadata:
+      labels:
+        app: zookeeper
+    spec:
+      containers:
+        - name: zookeeper
+          image: "{{ .Values.kafka.zookeeper.image.repository }}:{{ .Values.kafka.zookeeper.image.tag }}"
+          imagePullPolicy: {{ .Values.kafka.zookeeper.image.pullPolicy }}
+          ports:
+            - containerPort: 2181
+{{- end }}
