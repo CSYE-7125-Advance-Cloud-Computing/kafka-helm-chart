@@ -21,6 +21,8 @@ pipeline {
                 script {
                     withCredentials([string(credentialsId: GITHUB_TOKEN, variable: 'GH_TOKEN')]) {
                         env.GIT_LOCAL_BRANCH='main'
+                        
+                        sh "helm repo add bitnami https://charts.bitnami.com/bitnami"
 
                         sh "npm i -g semantic-release"
                         sh "npm install -g semantic-release/git"
