@@ -15,6 +15,9 @@ jobs:
       - name: Set up Helm
         uses: azure/setup-helm@v1
 
+      - name: Initialize helm
+        run: helm init
+
       - name: Install Helm dependencies
         run: helm dependency build .
 
