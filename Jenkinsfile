@@ -22,9 +22,6 @@ pipeline {
                     withCredentials([string(credentialsId: GITHUB_TOKEN, variable: 'GH_TOKEN')]) {
                         env.GIT_LOCAL_BRANCH='main'
 
-                        sh "rm -f kafka-helm-chart.tgz"
-                        sh "rm -rf kafka-helm-chart"
-
                         sh "npm i -g semantic-release"
                         sh "npm install -g semantic-release/git"
                         sh "npm install -g semantic-release/exec"
