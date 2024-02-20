@@ -16,7 +16,7 @@ jobs:
         uses: azure/setup-helm@v1
 
       - name: Initialize helm
-        run: helm init
+        run: helm init --stable-repo-url=https://charts.helm.sh/stable --client-only 
 
       - name: Install Helm dependencies
         run: helm dependency build .
