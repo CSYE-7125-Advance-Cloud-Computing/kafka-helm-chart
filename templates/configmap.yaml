@@ -1,8 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: kafka-config
-data:
-  server.properties: |
-    broker.id=1
-    listeners=PLAINTEXT://kafka:9092

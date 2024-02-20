@@ -1,15 +1,12 @@
 pipeline {
     agent any
-
-    environment {
-        CHART_NAME = 'webapp-helm-chart'
-        REPO_URL = 'https://github.com/CSYE-7125-Advance-Cloud-Computing/webapp-helm-chart'
-        GITHUB_TOKEN = 'GITHUB_TOKEN'
+    
+    tools{
+        nodejs 'nodejs'
     }
 
-    tools {
-        nodejs 'nodejs'
-        
+    environment {
+        GITHUB_TOKEN = 'github-access-token'
     }
 
     stages {
@@ -19,48 +16,32 @@ pipeline {
             }
         }
 
-        stage('Lint Helm Chart') {
-            steps {
-                sh 'helm lint .'
-            }
-        }
-
-        stage('Package Helm Chart') {
-            steps {
-                
-                sh 'helm package .'
-            }
-        }
-
         stage('Semantic Release') {
             steps {
                 script {
-                    sh 'npm install -g semantic-release'
-                    sh 'semantic-release'
+                    withCredentials([string(credentialsId: GITHUB_TOKEN, variable: 'GH_TOKEN')]) {
+                        env.GIT_LOCAL_BRANCH='main'
+
+                        sh "rm -f kafka-helm-chart.tgz"
+                        sh "rm -rf kafka-helm-chart"
+
+                        sh "npm i -g semantic-release"
+                        sh "npm install -g semantic-release/git"
+                        sh "npm install -g semantic-release/exec"
+                        
+                        sh "semantic-release"
+                    }
                 }
-            }
+            }                    
         }
+    }
 
-        stage('Update Chart Version') {
-            steps {
-                script {
-                    def chartVersion = sh(returnStdout: true, script: 'semantic-release --dry-run | grep "Release version" | cut -d \':\' -f 2').trim()
-                    sh "sed -i \"s/^version:.*/version: ${chartVersion}/\" Chart.yaml"
-                }
-            }
+    post {
+        success {
+            echo 'Pipeline succeeded!'
         }
-
-        
-
-        stage('Create GitHub Release') {
-            steps {
-                script {
-                    def chartVersion = sh(returnStdout: true, script: 'helm show chart . | grep version | cut -d \':\' -f 2').trim()
-                    def chartFile = "${CHART_NAME}-${chartVersion}.tgz"
-                    sh "github-release upload --owner MahithChigurupati --repo https://github.com/CSYE-7125-Advance-Cloud-Computing/webapp-helm-chart --tag v${chartVersion} --name \"Release v${chartVersion}\" --file ${chartFile}"
-                }
-            }
+        failure {
+            echo 'Pipeline failed!'
         }
     }
 }
-
