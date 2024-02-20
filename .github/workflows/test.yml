@@ -21,6 +21,9 @@ jobs:
       - name: Add Bitnami dependencies
         run: helm repo add bitnami https://charts.bitnami.com/bitnami
 
+      - name: update bitnami
+        run: helm repo update
+
       - name: Install Helm dependencies
         run: helm dependency build .
 
