@@ -1,0 +1,33 @@
+# Kafka configurations
+kafka:
+  listeners:
+    client:
+      protocol: PLAINTEXT
+    controller:
+      protocol: PLAINTEXT
+  controller:
+    persistence:
+      size: 1
+    initContainerResources:
+      requests:
+        memory: "50Mi"
+        cpu: "50m"
+      limits:
+        memory: "100Mi"
+        cpu: "100m"
+    resources:
+      requests:
+        memory: "500Mi"
+        cpu: "100m"
+      limits:
+        memory: "850Mi"
+        cpu: 1
+    affinity:
+      podAntiAffinity:
+        preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          podAffinityTerm:
+            labelSelector:
+              matchLabels:
+                app.kubernetes.io/instance: kafka
+            topologyKey: "kubernetes.io/hostname"
